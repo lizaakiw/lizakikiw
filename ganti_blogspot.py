@@ -22,7 +22,7 @@ with open("database.csv", "r", encoding="utf-8-sig") as f:
         cleaned_row = {k.strip() if k else '': v for k, v in row.items()}
         link = next((v for k, v in cleaned_row.items() if 'tombol1' in k.lower()), '').strip()
         if link:
-            # PINTAR: Memotong otomatis jika ada sisa '/?id=' atau '?id=' di dalam Excel Anda
+            # MEMOTONG format /?id= atau ?id= yang terbawa dari Excel
             link_bersih = link.split('?')[0].rstrip('/')
             link_blogspot_baru.append(link_bersih)
 
@@ -44,7 +44,7 @@ for i, match in enumerate(matches):
     prefix = match[0] # Bagian '"TOKEN_LAMA": "'
     suffix = match[1] # Bagian '?id=TOKEN_ID"'
     
-    # Ambil domain blogspot bersih dari baris Excel
+    # Ambil domain blogspot bersih dari baris Excel sesuai urutan
     blog_baru = link_blogspot_baru[i] if i < len(link_blogspot_baru) else link_blogspot_baru[0]
     
     # Menyatukan kembali menjadi format yang benar dan rapi demi keamanan Google
@@ -59,7 +59,7 @@ end_match = re.search(end_pattern, html_content)
 
 if start_match and end_match:
     start_pos = start_match.end()
-    end_pos = end_match.start()
+    end_pos = start_match.start()
     
     final_html = html_content[:start_pos] + "\n" + updated_js_content + "        " + html_content[end_pos:]
     
