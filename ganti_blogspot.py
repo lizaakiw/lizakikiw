@@ -28,8 +28,8 @@ print("Membaca file index.html lama untuk mengambil token Anda...")
 with open("index.html", "r", encoding="utf-8") as f:
     html_content = f.read()
 
-# Mencari semua baris token lama di index.html
-pattern = r'(\s*"[a-zA-Z0-9]+":\s*")[^"]+(\?id=[a-zA-Z0-9]+")'
+# Patenkan pola pencarian fleksibel untuk segala jenis subdomain/subfolder Blogspot
+pattern = r'(\s*"[a-zA-Z0-9]+":\s*")[^"]*?(\?id=[a-zA-Z0-9]+")'
 matches = re.findall(pattern, html_content)
 
 if not matches:
@@ -43,10 +43,10 @@ for i, match in enumerate(matches):
     prefix = match[0] # Bagian '"TOKEN_LAMA": "'
     suffix = match[1] # Bagian '?id=TOKEN_ID"'
     
-    # Ambil link blogspot baru sesuai urutan baris Excel, jika habis gunakan yang pertama
+    # Ambil link blogspot baru sesuai urutan baris Excel
     blog_baru = link_blogspot_baru[i] if i < len(link_blogspot_baru) else link_blogspot_baru[0]
     
-    # Bersihkan domain jika ada sisa query parameter di excel
+    # Bersihkan domain jika di excel tidak sengaja terbawa parameter tanda tanya
     blog_baru = blog_baru.split('?')[0]
     
     updated_js_content += f'{prefix}{blog_baru}{suffix},\n'
